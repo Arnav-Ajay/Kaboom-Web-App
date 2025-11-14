@@ -101,7 +101,7 @@ def render_playing(state: GameState, player_id: str) -> None:
         st.error("No active player.")
         return
 
-    show_hand_for_owner(state, player_id, reveal_all=is_my_turn(state, player_id))
+    show_hand_for_owner(state, player_id, reveal_all=False)
 
     if player["id"] != player_id:
         st.info(f"Waiting for {player['name']} to take their turn.")

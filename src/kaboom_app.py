@@ -1,7 +1,8 @@
-import time
 import uuid
 
 import streamlit as st
+import streamlit.components.v1 as components
+from streamlit_autorefresh import st_autorefresh
 
 from game_state import GameState, create_game_state, deal_initial_hands
 from phases import (
@@ -17,20 +18,25 @@ from room_store import (
     get_room,
     list_open_rooms,
     mark_room_started,
+    persist_room_state,
     remove_player_from_room,
     reset_room,
 )
 
-# Trigger regular reruns so every tab stays in sync with the shared room store.
-REFRESH_INTERVAL_MS = 2500
+# Auto-refresh the page so every tab stays in sync with the shared room store.
+# REFRESH_INTERVAL_MS = 2500
 
 
-def _autorefresh(interval_ms: int) -> None:
-    now = st.session_state.get("last_refresh_ts", 0)
-    current_ts = int(time.time() * 1000)
-    if current_ts - now >= interval_ms:
-        st.session_state["last_refresh_ts"] = current_ts
-        st.rerun()
+# def _autorefresh(interval_ms: int) -> None:
+#     components.html(
+#         f"""
+#         <script>
+#             const interval = {interval_ms};
+#             setTimeout(() => window.location.reload(), interval);
+#         </script>
+#         """,
+#         height=0,
+#     )
 
 
 def _ensure_player_identity() -> None:
@@ -156,6 +162,7 @@ def render_room_game(room: Room) -> None:
 
     player_id = st.session_state.player_id
     st.title("Kaboom 💣 – Game")
+    persist_room_state(room["id"], state)
     st.caption(f"Room code: {room['id']}")
     phase = state["phase"]
     if phase == "pre_peek":
@@ -173,15 +180,13 @@ def render_room_game(room: Room) -> None:
     else:
         st.error(f"Unknown phase: {phase}")
 
-    if st.button("Leave room"):
-        remove_player_from_room(room["id"], player_id)
-        st.session_state.room_id = None
-        st.rerun()
+    st.info("Leaving mid-game is disabled. Wait for the current round to finish to exit.")
 
 
 def main() -> None:
     st.set_page_config(page_title="Kaboom Card Game", page_icon="💣")
-    _autorefresh(REFRESH_INTERVAL_MS)
+    # _autorefresh(REFRESH_INTERVAL_MS)
+    st_autorefresh(interval=2000, limit=None, key="kaboom_sync")
     _ensure_player_identity()
 
     room = get_room(st.session_state.room_id)

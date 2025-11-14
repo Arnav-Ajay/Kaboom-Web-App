@@ -36,9 +36,6 @@ def render_reaction_window(state: GameState, player_id: str) -> None:
     if actor is None or not actor["active"]:
         st.info("You cannot react right now.")
         return
-    if actor["id"] == initiator_id:
-        st.info("You triggered the reaction and are not eligible to respond.")
-        return
 
     actor_hand = actor["hand"]
     if not actor_hand:
