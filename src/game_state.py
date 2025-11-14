@@ -38,7 +38,7 @@ def create_game_state(
         "current_player_id": current_player_id,
         "drawn_card": None,
         "peeks_used": {player["id"]: 0 for player in players},
-        "peeked_cards": set(),
+        "peeked_cards": [],
         "peek_log": [],
         "peeking_player_id": current_player_id,
         "kaboom_caller_id": None,
@@ -71,7 +71,7 @@ def deal_initial_hands(state: GameState) -> None:
     state["phase"] = "pre_peek"
     state["drawn_card"] = None
     state["peek_log"] = []
-    state["peeked_cards"] = set()
+    state["peeked_cards"] = []
     state["peeks_used"] = {player["id"]: 0 for player in state["players"]}
     state["kaboom_caller_id"] = None
     state["instant_winner_id"] = None
