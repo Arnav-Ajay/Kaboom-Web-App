@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Optional
 
 import streamlit as st
 
-from cards import Card, card_value, create_deck
+from src.game.cards import (Card, card_value, create_deck)
 
 GameState = Dict[str, Any]
 

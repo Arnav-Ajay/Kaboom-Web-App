@@ -1,7 +1,7 @@
 # room_store.py
 from typing import Any, Dict, List, Optional
 
-from firebase_client import fb_get, fb_patch, fb_post, fb_put, current_timestamp
+from src.firebase.firebase_client import fb_get, fb_patch, fb_post, fb_put, current_timestamp
 
 
 # Data model (stored under /rooms/<room_id> in RTDB)

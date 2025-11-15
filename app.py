@@ -1,18 +1,14 @@
-# kaboom_app.py
 import streamlit as st
 
-from views import landing_page, lobby_page, game_page
+from src.ui.views import landing_page, lobby_page, game_page
 
 
-def main():
+def main() -> None:
     st.set_page_config(page_title="Kaboom Lobby", page_icon="💣")
-
-    # Simple router based on st.session_state["page"]
     if "page" not in st.session_state:
         st.session_state.page = "landing"
 
     page = st.session_state.page
-
     if page == "landing":
         landing_page()
     elif page == "lobby":
