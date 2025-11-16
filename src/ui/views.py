@@ -2,6 +2,8 @@
 import uuid
 import streamlit as st
 from streamlit_autorefresh import st_autorefresh
+from src.game.phases import render_room_game
+from src.multiplayer.room_store import leave_room, get_room
 
 from src.multiplayer.room_store import (
     create_room,
@@ -201,33 +203,22 @@ def game_page():
             st.rerun()
         return
 
+    # ❌ REMOVE autorefresh here
+    # st_autorefresh(interval=2000, key=f"wait_for_start_{room_id}")
+
     room = get_room(room_id)
-    if not room:
-        st.error("Room no longer exists.")
-        if st.button("Back to landing"):
-            st.session_state.current_room_id = None
-            st.session_state.page = "landing"
-            st.rerun()
-        return
-
     status = room.get("status", "open")
+
     if status != "started":
-        # If someone reset the room back or closed it
-        st.warning("Game has not started yet or room is no longer active.")
-        if st.button("Back to lobby"):
-            st.session_state.page = "lobby"
-            st.rerun()
+        st.warning("Waiting for host to start the game...")
         return
 
-    st.header("Kaboom — Game Placeholder")
-    st.write(
-        "The lobby has successfully transitioned to a started game state.\n\n"
-        "This page is just a placeholder. Next step: plug in actual Kaboom game logic here."
-    )
+    # >>> THE ACTUAL GAME UI <<<
+    render_room_game(room_id)
 
+    st.markdown("---")
     if st.button("Leave Game & Room"):
         leave_room(room_id, st.session_state.player_id)
         st.session_state.current_room_id = None
-        st.session_state.is_host = False
         st.session_state.page = "landing"
         st.rerun()
