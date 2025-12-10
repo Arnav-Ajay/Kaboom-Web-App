@@ -3,8 +3,6 @@ import uuid
 import streamlit as st
 from streamlit_autorefresh import st_autorefresh
 from src.game.phases import render_room_game
-from src.multiplayer.room_store import leave_room, get_room
-
 from src.multiplayer.room_store import (
     create_room,
     list_open_rooms,
